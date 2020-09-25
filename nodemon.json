@@ -1,5 +1,7 @@
 {
   "env": {
-    "NODE_SERVER": "DEVELOPMENT"
+    "NODE_SERVER": "DEVELOPMENT",
+    "DEFAULT_PROFILE_PICT": "image.jpg",
+    "DEFAULT_IMAGE_PRODUCT": "image.jpg"
   }
 }
