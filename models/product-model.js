@@ -9,11 +9,18 @@ const productSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  stock: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
+  stocks: [
+    {
+      size: {
+        type: String,
+      },
+      stock: {
+        type: Number,
+        min: 0,
+        required: true,
+      },
+    },
+  ],
   price: {
     type: Number,
     min: 0,
@@ -21,7 +28,7 @@ const productSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: process.env.DEFAULT_IMAGES_PRODUCT,
+    default: process.env.DEFAULT_IMAGE_PRODUCT,
   },
 });
 
