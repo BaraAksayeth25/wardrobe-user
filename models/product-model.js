@@ -6,6 +6,11 @@ const productSchema = new mongoose.Schema({
     maxlength: 255,
     required: true,
   },
+  category: {
+    type: mongoose.Types.ObjectId,
+    ref: "category",
+    required: true,
+  },
   description: {
     type: String,
   },
