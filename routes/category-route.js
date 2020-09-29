@@ -1,9 +1,12 @@
 const express = require("express");
-
 const route = express.Router();
 
-route.get("/", (req, res, next) => {
-  res.json({ message: "Hello I'm Category Route" });
-});
+const {
+  getAllCategory,
+  createCategory,
+} = require("../controllers/category-controller");
+
+route.get("/", getAllCategory);
+route.get("/add", createCategory);
 
 module.exports = route;

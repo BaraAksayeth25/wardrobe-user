@@ -24,6 +24,7 @@ const productSchema = new mongoose.Schema({
         min: 0,
         required: true,
       },
+      _id: false,
     },
   ],
   price: {
