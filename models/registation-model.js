@@ -1,0 +1,35 @@
+const mongoose = require("mongoose");
+
+const registSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    maxLength: 255,
+  },
+  name: {
+    type: String,
+    required: true,
+    maxLength: 255,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  tokenActivation: {
+    type: String,
+  },
+  tokenExpired: {
+    type: Date,
+    default: () => new Date(+new Date() + 24 * 3600 * 1000),
+  },
+  createdAt: {
+    type: Date,
+    default: () => +new Date(),
+    index: {
+      expires: "2d",
+    },
+  },
+});
+
+module.exports = mongoose.model("registation", registSchema);
