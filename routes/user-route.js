@@ -1,6 +1,6 @@
 const express = require("express");
 const { check } = require("express-validator");
-const { signup } = require("../controllers/user-controller");
+const { signup, activateAccount } = require("../controllers/user-controller");
 const route = express.Router();
 
 route.get("/", (req, res, next) => {
@@ -16,5 +16,7 @@ route.post(
   ],
   signup
 );
+
+route.patch("/activate/:tokenActivate", activateAccount);
 
 module.exports = route;
