@@ -56,4 +56,4 @@ const signup = async (req, res, next) => {
   res.json({ message: "OK", token: token }).status(201);
 };
 
-module.exports = { signup, deleteData };
+module.exports = { signup };

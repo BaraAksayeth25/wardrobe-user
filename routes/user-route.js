@@ -1,6 +1,6 @@
 const express = require("express");
 const { check } = require("express-validator");
-const { signup, deleteData } = require("../controllers/user-controller");
+const { signup } = require("../controllers/user-controller");
 const route = express.Router();
 
 route.get("/", (req, res, next) => {
@@ -16,7 +16,5 @@ route.post(
   ],
   signup
 );
-
-route.delete("/delete", deleteData);
 
 module.exports = route;
