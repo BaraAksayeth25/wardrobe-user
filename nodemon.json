@@ -2,6 +2,11 @@
   "env": {
     "NODE_SERVER": "DEVELOPMENT",
     "DEFAULT_PROFILE_PICT": "image.jpg",
-    "DEFAULT_IMAGE_PRODUCT": "image.jpg"
+    "DEFAULT_IMAGE_PRODUCT": "image.jpg",
+    "EMAIL_SENDER": "mbara4321@gmail.com",
+    "PASSWORD_EMAIL": "passwordinhere",
+    "JWT_KEY_ACCESS": "NEED_NOT_TO_KNOW_ACCESS",
+    "JWT_KEY_REFRESH": "NEED_NOT_TO_KNOW_REFRESH",
+    "URL_EMAIL_VERIFICATION": "localhost:3000/activate"
   }
 }
