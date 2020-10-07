@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const HttpError = require("../models/http-error");
 const UserModel = require("../models/user-model");
 const RegistModel = require("../models/registation-model");
@@ -6,6 +7,48 @@ const randomString = require("crypto-random-string");
 const sendEmail = require("../helpers/email-verification");
 const { validationResult } = require("express-validator");
 const { async } = require("crypto-random-string");
+
+const login = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Search by email
+  let user;
+  try {
+    user = await UserModel.findOne({ email });
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+
+  if (!user) {
+    return next(new HttpError("Email or and password is wrong", 400));
+  }
+
+  // Compare password
+  let isValid = false;
+  try {
+    isValid = await bcrypt.compare(password, user.password);
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+
+  if (!isValid) {
+    return next(new HttpError("Email or and password is wrong", 400));
+  }
+
+  // Generate token
+  let token;
+  try {
+    token = jwt.sign(
+      { id: user._id, email: user.email },
+      procces.env.JWT_KEY_ACCESS,
+      { expiresIn: "15min" }
+    );
+  } catch (err) {
+    return next(new HttpError("Error generate the token", 500));
+  }
+
+  res.json({ message: "OK", token: token });
+};
 
 const signup = async (req, res, next) => {
   // validation body
