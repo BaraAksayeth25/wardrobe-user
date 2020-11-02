@@ -9,6 +9,16 @@ const { validationResult } = require("express-validator");
 const { async } = require("crypto-random-string");
 
 const login = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError(
+        `${errors.errors[0].msg} in ${errors.errors[0].param} `,
+        400
+      )
+    );
+  }
+
   const { email, password } = req.body;
 
   // Search by email
@@ -39,12 +49,12 @@ const login = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { id: user._id, email: user.email },
-      procces.env.JWT_KEY_ACCESS,
+      { id: user.id, email: user.email },
+      process.env.JWT_KEY_ACCESS,
       { expiresIn: "15min" }
     );
   } catch (err) {
-    return next(new HttpError("Error generate the token", 500));
+    return next(new HttpError(err, 500));
   }
 
   res.json({ message: "OK", token: token });
@@ -143,7 +153,37 @@ const activateAccount = async (req, res, next) => {
     return next(new HttpError(err.message, 500));
   }
 
-  res.json({ message: "OK" });
+  res.json({ message: "OK" }).status(201);
 };
 
-module.exports = { signup, activateAccount };
+const updateProfilePict = async (req, res, next) => {
+  const email = req.userData.email;
+  try {
+    await UserModel.updateOne(
+      { email },
+      {
+        $set: {
+          profilePict: req.file.path,
+        },
+      }
+    );
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  res.json({ message: "OK" }).status(203);
+};
+
+const getUser = async (req, res, next) => {
+  const id = req.userData.id;
+  if (!id) return next(new HttpError("Access Denied", 401));
+  let user;
+  try {
+    user = await UserModel.findById(id, { password: 0, __v: 0 });
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  if (!user) return next(new HttpError("User Not Found", 404));
+  res.json({ message: "OK", data: user });
+};
+
+module.exports = { signup, activateAccount, updateProfilePict, getUser, login };
