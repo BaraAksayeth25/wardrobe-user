@@ -16,10 +16,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  address: {
-    type: String,
-    maxLength: 255,
-  },
   profilePict: {
     type: String,
     default: process.env.PROFILE_PICT,
