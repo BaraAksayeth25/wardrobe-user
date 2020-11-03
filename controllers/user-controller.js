@@ -147,13 +147,19 @@ const activateAccount = async (req, res, next) => {
     password,
   });
 
+  let token;
   try {
     await newUser.save();
+    token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_KEY_ACCESS,
+      { expiresIn: "15min" }
+    );
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
 
-  res.json({ message: "OK" }).status(201);
+  res.json({ message: "OK", token }).status(201);
 };
 
 const updateProfilePict = async (req, res, next) => {
