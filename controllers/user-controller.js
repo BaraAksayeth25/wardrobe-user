@@ -6,7 +6,6 @@ const RegistModel = require("../models/registation-model");
 const randomString = require("crypto-random-string");
 const sendEmail = require("../helpers/email-verification");
 const { validationResult } = require("express-validator");
-const { async } = require("crypto-random-string");
 
 const login = async (req, res, next) => {
   const errors = validationResult(req);
@@ -147,10 +146,10 @@ const activateAccount = async (req, res, next) => {
     password,
   });
 
-  let token;
+  let newToken;
   try {
     await newUser.save();
-    token = jwt.sign(
+    newToken = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_KEY_ACCESS,
       { expiresIn: "15min" }
@@ -159,7 +158,7 @@ const activateAccount = async (req, res, next) => {
     return next(new HttpError(err.message, 500));
   }
 
-  res.json({ message: "OK", token }).status(201);
+  res.json({ message: "OK", token: newToken }).status(201);
 };
 
 const updateProfilePict = async (req, res, next) => {
