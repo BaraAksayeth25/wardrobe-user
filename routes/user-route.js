@@ -1,11 +1,15 @@
 const express = require("express");
 const { check } = require("express-validator");
-const { signup, activateAccount } = require("../controllers/user-controller");
+const {
+  signup,
+  activateAccount,
+  getUser,
+  updateProfilePict,
+  login,
+} = require("../controllers/user-controller");
+const ImageUploader = require("../middlewares/image-upload");
+const Authentication = require("../middlewares/authenticate");
 const route = express.Router();
-
-route.get("/", (req, res, next) => {
-  res.json({ message: "Hello I'm User Route" });
-});
 
 route.post(
   "/signup",
@@ -17,6 +21,18 @@ route.post(
   signup
 );
 
+route.post("/login", check("email").normalizeEmail().isEmail(), login);
+
 route.patch("/activate/:tokenActivate", activateAccount);
+
+route.use(Authentication);
+
+route.patch(
+  "/profile/picture",
+  ImageUploader.single("image"),
+  updateProfilePict
+);
+
+route.get("/user", getUser);
 
 module.exports = route;
