@@ -53,6 +53,20 @@ const getProductByCategory = async (req, res, next) => {
   res.json({ message: "OK", data: product });
 };
 
+const getLatestProduct = async (req, res, next) => {
+  let product;
+  try {
+    product = await ProductModel.find(
+      {},
+      {},
+      { sort: { createdAt: -1 } }
+    ).limit(4);
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  res.json({ message: "OK", data: product });
+};
+
 const createProduct = async (req, res, next) => {
   const newProduct = new ProductModel({
     name: "Jaz Thigao Kin",
@@ -73,5 +87,6 @@ module.exports = {
   getAllProduct,
   getProductById,
   getProductByCategory,
+  getLatestProduct,
   createProduct,
 };
