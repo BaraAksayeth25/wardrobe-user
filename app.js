@@ -10,6 +10,7 @@ const { db_url, options } = require("./config/db");
 const productRoute = require("./routes/product-route");
 const categoryRoute = require("./routes/category-route");
 const userRoute = require("./routes/user-route");
+const orderRoute = require("./routes/order-route");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -29,9 +30,10 @@ app.use((req, res, next) => {
 });
 
 // Set Routes
-app.use("/api/product", productRoute);
-app.use("/api/category", categoryRoute);
-app.use("/api/user", userRoute);
+app.use("/api/products", productRoute);
+app.use("/api/categories", categoryRoute);
+app.use("/api/users", userRoute);
+app.use("/api/orders", orderRoute);
 
 // Error Handler
 app.use((err, req, res, next) => {
