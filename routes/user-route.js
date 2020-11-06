@@ -4,6 +4,7 @@ const {
   signup,
   activateAccount,
   getUser,
+  updateBiodata,
   updateProfilePict,
   login,
 } = require("../controllers/user-controller");
@@ -34,5 +35,15 @@ route.patch(
 );
 
 route.get("/user", getUser);
+
+route.patch(
+  "/profile/biodata",
+  [
+    check("email").optional(true).normalizeEmail().isEmail(),
+    check("name").optional(true).trim(),
+    check("phone").optional(true).trim().isLength({ min: 15 }),
+  ],
+  updateBiodata
+);
 
 module.exports = route;

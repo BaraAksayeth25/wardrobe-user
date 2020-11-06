@@ -175,7 +175,7 @@ const updateProfilePict = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
-  res.json({ message: "OK" }).status(203);
+  res.json({ message: "OK" });
 };
 
 const getUser = async (req, res, next) => {
@@ -191,4 +191,44 @@ const getUser = async (req, res, next) => {
   res.json({ message: "OK", data: user });
 };
 
-module.exports = { signup, activateAccount, updateProfilePict, getUser, login };
+const updateBiodata = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError(
+        `${errors.errors[0].msg} in ${errors.errors[0].param} `,
+        500
+      )
+    );
+  }
+
+  const userId = req.userData.id;
+  const { name, phone, email } = req.body;
+
+  let user;
+  try {
+    user = await UserModel.findById(userId);
+  } catch (err) {
+    return next(new HttpError(err.message));
+  }
+
+  user.name = name || user.name;
+  user.phone = phone || user.phone;
+  user.email = email || user.email;
+
+  try {
+    await user.save();
+  } catch (err) {
+    return next(new HttpError(err.message));
+  }
+  return res.json({ message: "OK" });
+};
+
+module.exports = {
+  signup,
+  activateAccount,
+  updateProfilePict,
+  getUser,
+  login,
+  updateBiodata,
+};
