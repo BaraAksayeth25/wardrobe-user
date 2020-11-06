@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    maxlength: 15,
+  },
   profilePict: {
     type: String,
     default: process.env.PROFILE_PICT,
