@@ -11,6 +11,7 @@ const productRoute = require("./routes/product-route");
 const categoryRoute = require("./routes/category-route");
 const userRoute = require("./routes/user-route");
 const orderRoute = require("./routes/order-route");
+const transactionRoute = require("./routes/transaction-route");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -34,6 +35,7 @@ app.use("/api/products", productRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/users", userRoute);
 app.use("/api/orders", orderRoute);
+app.use("/api/transactions", transactionRoute);
 
 // Error Handler
 app.use((err, req, res, next) => {
