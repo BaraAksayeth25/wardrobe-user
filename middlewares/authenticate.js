@@ -18,6 +18,6 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    return next(new HttpError("Error In Verify Token", 500));
+    return next(new HttpError(err, 500));
   }
 };
