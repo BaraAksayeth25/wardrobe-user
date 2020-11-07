@@ -17,6 +17,7 @@ route.post(
   [
     check("email").normalizeEmail().isEmail(),
     check("name").not().isEmpty(),
+    check("phone").isMobilePhone("id-ID"),
     check("password").trim().isLength({ min: 6 }),
   ],
   signup
@@ -41,7 +42,7 @@ route.patch(
   [
     check("email").optional(true).normalizeEmail().isEmail(),
     check("name").optional(true).trim(),
-    check("phone").optional(true).trim().isLength({ min: 15 }),
+    check("phone").optional(true).isMobilePhone("id-ID"),
   ],
   updateBiodata
 );

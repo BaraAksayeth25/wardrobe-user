@@ -71,7 +71,7 @@ const signup = async (req, res, next) => {
     );
   }
 
-  const { email, name, password } = req.body;
+  const { email, name, password, phone } = req.body;
 
   // Check if email already in database and hash the password
   let alreadyAccount, hashPassword, alreadyVerify;
@@ -93,6 +93,7 @@ const signup = async (req, res, next) => {
   const newRegist = new RegistModel({
     email,
     name,
+    phone,
     password: hashPassword,
     tokenActivation: token,
   });
@@ -129,7 +130,7 @@ const activateAccount = async (req, res, next) => {
   }
 
   // Desctructuring
-  const { name, email, password, tokenExpired } = dataRegist;
+  const { name, email, password, tokenExpired, phone } = dataRegist;
 
   if (tokenExpired < Date.now()) {
     try {
@@ -144,6 +145,7 @@ const activateAccount = async (req, res, next) => {
     email,
     name,
     password,
+    phone,
   });
 
   let newToken;
