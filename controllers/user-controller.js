@@ -199,7 +199,7 @@ const updateBiodata = async (req, res, next) => {
     return next(
       new HttpError(
         `${errors.errors[0].msg} in ${errors.errors[0].param} `,
-        500
+        400
       )
     );
   }
