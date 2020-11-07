@@ -16,6 +16,10 @@ const registSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    maxLength: 15,
+  },
   tokenActivation: {
     type: String,
   },
