@@ -22,6 +22,7 @@ const registSchema = new mongoose.Schema({
   },
   tokenActivation: {
     type: String,
+    unique: true,
   },
   tokenExpired: {
     type: Date,
