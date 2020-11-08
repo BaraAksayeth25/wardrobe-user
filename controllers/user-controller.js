@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const HttpError = require("../models/http-error");
 const UserModel = require("../models/user-model");
-const RegistModel = require("../models/registation-model");
+const RegistationModel = require("../models/registation-model");
 const randomString = require("crypto-random-string");
 const sendEmail = require("../helpers/email-verification");
 const { validationResult } = require("express-validator");
@@ -78,7 +78,7 @@ const signup = async (req, res, next) => {
   try {
     [alreadyAccount, alreadyVerify, hashPassword] = await Promise.all([
       UserModel.findOne({ email: email }),
-      RegistModel.findOne({ email: email }),
+      RegistationModel.findOne({ email: email }),
       bcrypt.hash(password, 12),
     ]);
   } catch (err) {
@@ -90,7 +90,7 @@ const signup = async (req, res, next) => {
 
   const token = randomString({ length: 32, type: "url-safe" });
 
-  const newRegist = new RegistModel({
+  const newRegist = new RegistationModel({
     email,
     name,
     phone,
@@ -112,7 +112,7 @@ const signup = async (req, res, next) => {
     return next(new HttpError(err.message, 500));
   }
 
-  res.json({ message: "OK", token, email }).status(201);
+  res.json({ message: "OK", token: token }).status(201);
 };
 
 const activateAccount = async (req, res, next) => {
@@ -121,7 +121,7 @@ const activateAccount = async (req, res, next) => {
   // Check in database
   let dataRegist;
   try {
-    dataRegist = await RegistModel.findOne({ tokenActivation: token });
+    dataRegist = await RegistationModel.findOne({ tokenActivation: token });
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
@@ -134,7 +134,7 @@ const activateAccount = async (req, res, next) => {
 
   if (tokenExpired < Date.now()) {
     try {
-      await RegistModel.deleteOne({ tokenActivation: token });
+      await RegistationModel.deleteOne({ tokenActivation: token });
     } catch (err) {
       return next(new HttpError(err.message, 500));
     }
@@ -152,7 +152,7 @@ const activateAccount = async (req, res, next) => {
   try {
     await newUser.save();
     newToken = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: newUser.id, email: newUser.email },
       process.env.JWT_KEY_ACCESS,
       { expiresIn: "15min" }
     );
@@ -226,6 +226,63 @@ const updateBiodata = async (req, res, next) => {
   return res.json({ message: "OK" });
 };
 
+const changePassword = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty) {
+    return next(
+      new HttpError(`${errors.errors[0].msg} in ${errors.errors[0].param}`, 400)
+    );
+  }
+
+  const {
+    password,
+    confirmPassword,
+    newPassword,
+    confirmNewPassword,
+  } = req.body;
+
+  if (password !== confirmPassword || newPassword !== confirmNewPassword) {
+    return next(new HttpError("Bad confirmation password", 400));
+  }
+
+  const email = req.userData.email;
+  let user;
+  let hashPassword;
+  try {
+    [user, hashPassword] = await Promise.all([
+      UserModel.findOne({ email }),
+      bcrypt.hash(newPassword, 12),
+    ]);
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  if (!user) {
+    return next(new HttpError("User not found", 404));
+  }
+
+  let isValid = true;
+  try {
+    isValid = await bcrypt.compare(password, user.password);
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  if (!isValid) {
+    return next(new HttpError("Password is invalid", 403));
+  }
+
+  user.password = hashPassword;
+  try {
+    await Promise.all([
+      user.save(),
+      sendEmail(email, "Change Password Account"),
+    ]);
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+
+  res.json({ message: "OK" });
+};
+
 module.exports = {
   signup,
   activateAccount,
@@ -233,4 +290,5 @@ module.exports = {
   getUser,
   login,
   updateBiodata,
+  changePassword,
 };
