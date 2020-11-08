@@ -57,7 +57,8 @@ const createTransaction = async (req, res, next) => {
   const totalPriceProduct = productTransaction.reduce((accProd, curProd) => {
     try {
       return (
-        accProd.stock * accProd._id.price + curProd.stock * curProd._id.price
+        days *
+        (accProd.stock * accProd._id.price + curProd.stock * curProd._id.price)
       );
     } catch (err) {
       error = err;
@@ -111,9 +112,13 @@ const getTransactionByBookingCode = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError(err.message));
   }
+  if (!transaction) {
+    return next(new HttpError("Transaction Not Found", 404));
+  }
   if (email !== transaction.email) {
     return next(new HttpError("Access Forbidden", 403));
   }
+  // if(!transaction)
   res.json({ message: "OK", data: transaction });
 };
 
@@ -122,9 +127,11 @@ const getTransactionByUser = async (req, res, next) => {
 
   let transactions;
   try {
-    transactions = await TransactionModel.find({ email }).populate(
-      "products._id"
-    );
+    transactions = await TransactionModel.find(
+      { email },
+      {},
+      { sort: { createdAt: -1 } }
+    ).populate("products._id");
   } catch (err) {
     return next(new HttpError(err.message));
   }
