@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
+const fs = require("fs");
 
 // DB Connection
 const { db_url, options } = require("./config/db");
@@ -39,6 +40,16 @@ app.use("/api/transactions", transactionRoute);
 
 // Error Handler
 app.use((err, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, (err) => {
+      console.log(err);
+    });
+  }
+
+  if (res.headerSent) {
+    return next(error);
+  }
+
   res.status(err.code || 500);
   res.json({ message: err.message || "An Unknown Error!" });
 });
