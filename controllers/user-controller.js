@@ -4,6 +4,8 @@ const HttpError = require("../models/http-error");
 const UserModel = require("../models/user-model");
 const RegistationModel = require("../models/registation-model");
 const randomString = require("crypto-random-string");
+const fs = require("fs");
+const path = require("path");
 const sendEmail = require("../helpers/email-verification");
 const { validationResult } = require("express-validator");
 
@@ -121,7 +123,9 @@ const activateAccount = async (req, res, next) => {
   // Check in database
   let dataRegist;
   try {
-    dataRegist = await RegistationModel.findOne({ tokenActivation: token });
+    dataRegist = await RegistationModel.findOneAndDelete({
+      tokenActivation: token,
+    });
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
@@ -131,15 +135,6 @@ const activateAccount = async (req, res, next) => {
 
   // Desctructuring
   const { name, email, password, tokenExpired, phone } = dataRegist;
-
-  if (tokenExpired < Date.now()) {
-    try {
-      await RegistationModel.deleteOne({ tokenActivation: token });
-    } catch (err) {
-      return next(new HttpError(err.message, 500));
-    }
-    return next(new HttpError("Token has Expired, please try again", 403));
-  }
 
   const newUser = new UserModel({
     email,
@@ -166,17 +161,19 @@ const activateAccount = async (req, res, next) => {
 const updateProfilePict = async (req, res, next) => {
   const email = req.userData.email;
   try {
-    await UserModel.updateOne(
+    let user = await UserModel.findOneAndUpdate(
       { email },
       {
         $set: {
-          profilePict: req.file.path,
+          profilePict: req.file.filename,
         },
       }
     );
+    fs.unlinkSync(path.resolve("uploads", "images", `${user.profilePict}`));
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
+
   res.json({ message: "OK" });
 };
 
@@ -205,7 +202,7 @@ const updateBiodata = async (req, res, next) => {
   }
 
   const userId = req.userData.id;
-  const { name, phone, email } = req.body;
+  const { name, phone } = req.body;
 
   let user;
   try {
@@ -216,7 +213,6 @@ const updateBiodata = async (req, res, next) => {
 
   user.name = name || user.name;
   user.phone = phone || user.phone;
-  user.email = email || user.email;
 
   try {
     await user.save();
