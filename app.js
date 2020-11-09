@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
 const fs = require("fs");
+const path = require("path");
+const HttpError = require("./models/http-error");
 
 // DB Connection
 const { db_url, options } = require("./config/db");
@@ -19,6 +21,7 @@ const PORT = process.env.PORT || 8080;
 
 // Set Middlewares
 app.use(bodyParser.json()); // Parser every request body to json
+app.use("/uploads/images", express.static(path.join("uploads", "images")));
 app.use(helmet()); // Manage http headers respons
 app.disable("x-powered-by");
 app.use((req, res, next) => {
@@ -37,6 +40,11 @@ app.use("/api/categories", categoryRoute);
 app.use("/api/users", userRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/transactions", transactionRoute);
+
+app.use((req, res, next) => {
+  const error = new HttpError("Could not find this route", 404);
+  throw error;
+});
 
 // Error Handler
 app.use((err, req, res, next) => {
