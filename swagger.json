@@ -1,0 +1,47 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Documentation for Api User",
+    "version": "1.0.0",
+    "title": "Mori Wardrobe Api",
+    "contact": {
+      "email": "tobarcompany12@gmail.com"
+    }
+  },
+  "schemes": ["http"],
+  "host": "http://localhost:8080",
+  "basePath": "/api",
+  "paths": {
+    "/users/signup": {
+      "post": {}
+    },
+    "/users/login": {
+      "post": {}
+    },
+    "/users/activate/{tokenActivate}": {
+      "post": {}
+    }
+  },
+  "tags": [
+    {
+      "name": "users",
+      "description": "list api(s) for user"
+    },
+    {
+      "name": "categories",
+      "description": "list api for category"
+    },
+    {
+      "name": "products",
+      "description": "list api(s) for product"
+    },
+    {
+      "name": "transactions",
+      "description": "list api for transaction"
+    },
+    {
+      "name": "orders",
+      "description": "list api for order"
+    }
+  ]
+}
