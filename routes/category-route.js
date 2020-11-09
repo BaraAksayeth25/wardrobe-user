@@ -7,6 +7,6 @@ const {
 } = require("../controllers/category-controller");
 
 route.get("/", getAllCategory);
-route.get("/add", createCategory);
+route.get("/add/:ct", createCategory);
 
 module.exports = route;
