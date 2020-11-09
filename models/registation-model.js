@@ -32,7 +32,7 @@ const registSchema = new mongoose.Schema({
     type: Date,
     default: () => +new Date(),
     index: {
-      expires: "2d",
+      expires: "1d",
     },
   },
 });
