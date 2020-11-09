@@ -1,6 +1,7 @@
+const mongoose = require("mongoose");
+const escapeStringRegexp = require("escape-string-regexp");
 const ProductModel = require("../models/product-model");
 const HttpError = require("../models/http-error");
-const mongoose = require("mongoose");
 
 const getAllProduct = async (req, res, next) => {
   const pages = parseInt(req.params.pages) || 1;
@@ -81,13 +82,35 @@ const getTopProduct = async (req, res, next) => {
   res.json({ message: "OK", data: product });
 };
 
+const getProductByName = async (req, res, next) => {
+  const pages = parseInt(req.params.pages) || 1;
+  const skipDocument = pages <= 1 ? 0 : pages * 10 - 10;
+  const limitDocument = 10;
+  const name = req.params.name;
+  if (!name) {
+    return next(new HttpError("Name was invalid", 403));
+  }
+
+  const escapedRegex = escapeStringRegexp(name);
+  const regex = new RegExp(`.*${escapedRegex}.*`, "gi");
+  let product;
+  try {
+    product = await ProductModel.find({ name: { $regex: regex } })
+      .skip(skipDocument)
+      .limit(limitDocument);
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  res.json({ message: "OK", data: product, name });
+};
+
 const createProduct = async (req, res, next) => {
   const newProduct = new ProductModel({
-    name: "Ini Lebih baru loh",
-    category: new mongoose.Types.ObjectId("5f70179d45eba01ad085d495"),
-    description: "Event formal with the team",
-    stocks: [{ size: "L", stock: 12 }],
-    price: 120000,
+    name: req.body.name,
+    category: new mongoose.Types.ObjectId(req.body.ct),
+    description: req.body.description,
+    stocks: req.body.stocks,
+    price: req.body.price,
   });
   try {
     await newProduct.save();
@@ -104,4 +127,5 @@ module.exports = {
   getLatestProduct,
   getTopProduct,
   createProduct,
+  getProductByName,
 };
