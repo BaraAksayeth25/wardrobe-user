@@ -13,7 +13,7 @@ const getAllCategory = async (req, res, next) => {
 
 const createCategory = async (req, res, next) => {
   const newCategory = new CategoryModel({
-    name: "Jaz",
+    name: req.params.ct,
   });
   try {
     newCategory.save();
