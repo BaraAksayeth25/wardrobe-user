@@ -37,6 +37,9 @@ const createTransaction = async (req, res, next) => {
   }
 
   let stockExceed = false;
+  if (!newTransaction) {
+    return next(new HttpError("Product Not Found", 404));
+  }
 
   const productTransaction = newTransaction.products;
 
