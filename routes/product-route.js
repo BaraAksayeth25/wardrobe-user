@@ -9,7 +9,7 @@ const {
   getTopProduct,
   getProductByName,
   createProduct,
-} = require("../controllers/product-controller");
+} = require("../controllers/user/product-controller");
 
 route.get("/id/:id", getProductById);
 route.get("/pages/:pages", getAllProduct);

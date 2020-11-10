@@ -7,7 +7,7 @@ const {
   createTransaction,
   getTransactionByBookingCode,
   getTransactionByUser,
-} = require("../controllers/transaction-controller");
+} = require("../controllers/user/transaction-controller");
 
 route.use(Authentication);
 

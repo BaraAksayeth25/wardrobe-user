@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const escapeStringRegexp = require("escape-string-regexp");
-const ProductModel = require("../models/product-model");
-const HttpError = require("../models/http-error");
+const ProductModel = require("../../models/product-model");
+const HttpError = require("../../models/http-error");
 
 const getAllProduct = async (req, res, next) => {
   const pages = parseInt(req.params.pages) || 1;

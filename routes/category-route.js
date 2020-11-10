@@ -4,7 +4,7 @@ const route = express.Router();
 const {
   getAllCategory,
   createCategory,
-} = require("../controllers/category-controller");
+} = require("../controllers/user/category-controller");
 
 route.get("/", getAllCategory);
 route.get("/add/:ct", createCategory);

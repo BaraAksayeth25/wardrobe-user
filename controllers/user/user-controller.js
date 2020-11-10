@@ -1,12 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const HttpError = require("../models/http-error");
-const UserModel = require("../models/user-model");
-const RegistationModel = require("../models/registation-model");
+const HttpError = require("../../models/http-error");
+const UserModel = require("../../models/user-model");
+const RegistationModel = require("../../models/registation-model");
 const randomString = require("crypto-random-string");
 const fs = require("fs");
 const path = require("path");
-const sendEmail = require("../helpers/email-verification");
+const sendEmail = require("../../helpers/email-verification");
 const { validationResult } = require("express-validator");
 
 const login = async (req, res, next) => {

@@ -1,9 +1,9 @@
 const randomString = require("crypto-random-string");
 const { validationResult } = require("express-validator");
-const addDays = require("../helpers/date");
+const addDays = require("../../helpers/date");
 
-const TransactionModel = require("../models/transaction-model");
-const HttpError = require("../models/http-error");
+const TransactionModel = require("../../models/transaction-model");
+const HttpError = require("../../models/http-error");
 
 const createTransaction = async (req, res, next) => {
   const bookingCode = randomString({ length: 16, type: "distinguishable" });

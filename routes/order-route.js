@@ -7,7 +7,7 @@ const {
   createOrder,
   getOrderFinished,
   getOrderOnGoing,
-} = require("../controllers/order-controller");
+} = require("../controllers/user/order-controller");
 
 route.post("/add", createOrder);
 route.use(Authentication);

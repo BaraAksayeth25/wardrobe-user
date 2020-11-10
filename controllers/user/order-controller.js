@@ -1,8 +1,8 @@
 const randomString = require("crypto-random-string");
 
-const OrderModel = require("../models/order-model");
-const TransactionModel = require("../models/transaction-model");
-const HttpError = require("../models/http-error");
+const OrderModel = require("../../models/order-model");
+const TransactionModel = require("../../models/transaction-model");
+const HttpError = require("../../models/http-error");
 
 const getOrderOnGoing = async (req, res, next) => {
   const email = req.userData.email;

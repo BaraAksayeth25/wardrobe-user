@@ -1,5 +1,5 @@
-const CategoryModel = require("../models/category-model");
-const HttpError = require("../models/http-error");
+const CategoryModel = require("../../models/category-model");
+const HttpError = require("../../models/http-error");
 
 const getAllCategory = async (req, res, next) => {
   let category;

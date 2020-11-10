@@ -8,7 +8,7 @@ const {
   updateProfilePict,
   login,
   changePassword,
-} = require("../controllers/user-controller");
+} = require("../controllers/user/user-controller");
 const ImageUploader = require("../middlewares/image-upload");
 const Authentication = require("../middlewares/authenticate");
 const route = express.Router();
