@@ -52,7 +52,7 @@ const login = async (req, res, next) => {
     token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_KEY_ACCESS,
-      { expiresIn: "15min" }
+      { expiresIn: "1h" }
     );
   } catch (err) {
     return next(new HttpError(err, 500));
@@ -149,7 +149,7 @@ const activateAccount = async (req, res, next) => {
     newToken = jwt.sign(
       { id: newUser.id, email: newUser.email },
       process.env.JWT_KEY_ACCESS,
-      { expiresIn: "15min" }
+      { expiresIn: "1h" }
     );
   } catch (err) {
     return next(new HttpError(err.message, 500));
