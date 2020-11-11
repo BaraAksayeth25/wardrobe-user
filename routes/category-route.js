@@ -1,12 +1,31 @@
 const express = require("express");
+const { check } = require("express-validator");
 const route = express.Router();
 
+const { getAllCategory } = require("../controllers/user/category-controller");
+
 const {
-  getAllCategory,
   createCategory,
-} = require("../controllers/user/category-controller");
+  updateCategory,
+  deleteCategory,
+  getCategoryById,
+} = require("../controllers/admin/category-controller");
+const AdminAuthenticate = require("../middlewares/authenticate-admin");
 
 route.get("/", getAllCategory);
-route.get("/add/:ct", createCategory);
+
+route.use(AdminAuthenticate);
+
+route.get("/:id", check("id").isMongoId(), getCategoryById);
+
+route.post("/add", check("name").trim().isString(), createCategory);
+
+route.patch(
+  "/edit/:id",
+  [check("id").isMongoId(), check("name").trim().isString()],
+  updateCategory
+);
+
+route.delete("/delete/:id", check("id").isMongoId(), deleteCategory);
 
 module.exports = route;
