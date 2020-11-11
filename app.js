@@ -15,6 +15,7 @@ const categoryRoute = require("./routes/category-route");
 const userRoute = require("./routes/user-route");
 const orderRoute = require("./routes/order-route");
 const transactionRoute = require("./routes/transaction-route");
+const adminRoute = require("./routes/admin-route");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -40,6 +41,7 @@ app.use("/api/categories", categoryRoute);
 app.use("/api/users", userRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/transactions", transactionRoute);
+app.use("/api/admins", adminRoute);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route", 404);
