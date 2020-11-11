@@ -19,7 +19,7 @@ route.post(
     check("email").isEmail(),
     check("name").not().isEmpty(),
     check("phone").isMobilePhone("id-ID"),
-    check("password").trim().isLength({ min: 6 }),
+    check("password").isLength({ min: 6 }),
   ],
   signup
 );
