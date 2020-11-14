@@ -9,6 +9,11 @@ const MIME_TYPE_IMAGES = {
 
 const imageUpload = multer({
   limits: 50000,
+  fileFilter: (req, file, cb) => {
+    const isValid = !!MIME_TYPE_IMAGES[file.mimetype];
+    let error = isValid ? null : new Error("MimeType Not Allowed");
+    cb(error, isValid);
+  },
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "uploads/images");
@@ -16,11 +21,6 @@ const imageUpload = multer({
     filename: (req, file, cb) => {
       const exts = MIME_TYPE_IMAGES[file.mimetype];
       cb(null, `${uuid()}.${exts}`);
-    },
-    fileFilter: (req, file, cb) => {
-      const isValid = !!MIME_TYPE_IMAGES[file.mimetype];
-      let error = isValid ? null : "Mimetype not Allowed";
-      cb(error, isValid);
     },
   }),
 });
