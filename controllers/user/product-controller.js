@@ -104,28 +104,11 @@ const getProductByName = async (req, res, next) => {
   res.json({ message: "OK", data: product, name });
 };
 
-const createProduct = async (req, res, next) => {
-  const newProduct = new ProductModel({
-    name: req.body.name,
-    category: new mongoose.Types.ObjectId(req.body.ct),
-    description: req.body.description,
-    stocks: req.body.stocks,
-    price: req.body.price,
-  });
-  try {
-    await newProduct.save();
-  } catch (err) {
-    return next(new HttpError(err.message, 500));
-  }
-  res.json({ message: "Success" });
-};
-
 module.exports = {
   getAllProduct,
   getProductById,
   getProductByCategory,
   getLatestProduct,
   getTopProduct,
-  createProduct,
   getProductByName,
 };
