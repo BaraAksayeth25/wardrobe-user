@@ -10,11 +10,11 @@ const {
   deleteCategory,
   getCategoryById,
 } = require("../controllers/admin/category-controller");
-const AdminAuthenticate = require("../middlewares/authenticate-admin");
+const adminAuthenticate = require("../middlewares/authenticate-admin");
 
 route.get("/", getAllCategory);
 
-route.use(AdminAuthenticate);
+route.use(adminAuthenticate);
 
 route.get("/:id", check("id").isMongoId(), getCategoryById);
 

@@ -7,7 +7,7 @@ const {
   login,
   getAdmin,
 } = require("../controllers/admin/admin-controller");
-const AdminAuthenticate = require("../middlewares/authenticate-admin");
+const adminAuthenticate = require("../middlewares/authenticate-admin");
 
 route.post("/login", check("email").isEmail(), login);
 
@@ -17,7 +17,7 @@ route.post(
   signup
 );
 
-route.use(AdminAuthenticate);
+route.use(adminAuthenticate);
 
 route.get("/admin", getAdmin);
 
