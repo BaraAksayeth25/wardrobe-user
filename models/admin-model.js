@@ -13,6 +13,11 @@ const adminSchema = new mongoose.Schema({
   name: {
     type: String,
     maxlength: 255,
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true,
   },
 });
 

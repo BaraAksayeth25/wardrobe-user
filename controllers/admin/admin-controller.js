@@ -16,7 +16,7 @@ const signup = async (req, res, next) => {
     );
   }
 
-  const { email, password, name } = req.body;
+  const { email, password, name, role } = req.body;
 
   let alreadyAdmin;
   let hashPassword;
@@ -37,6 +37,12 @@ const signup = async (req, res, next) => {
     email,
     name,
     password: hashPassword,
+    role:
+      role.toLowerCase() === "admin"
+        ? "Admin"
+        : role.toLowerCase() === "cashier"
+        ? "Cashier"
+        : "Admin",
   });
 
   try {
@@ -70,7 +76,7 @@ const login = async (req, res, next) => {
     return next(new HttpError("Email or and Password has wrong", 400));
   }
 
-  let isvalid = false;
+  let isValid = false;
   try {
     isValid = await bcrypt.compare(password, admin.password);
   } catch (err) {
@@ -84,7 +90,7 @@ const login = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { email: admin.email, id: admin.id, role: "admin" },
+      { email: admin.email, id: admin.id, role: admin.role, name: admin.name },
       process.env.JWT_KEY_ACCESS_ADMIN,
       { expiresIn: "1h" }
     );
