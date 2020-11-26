@@ -16,7 +16,10 @@ module.exports = (req, res, next) => {
   try {
     const decodeToken = jwt.decode(token, process.env.JWT_KEY_ACCESS_ADMIN);
 
-    if (!decodeToken.role || decodeToken.role !== "admin") {
+    if (
+      !decodeToken.role ||
+      (decodeToken.role !== "Admin" && decodeToken.role !== "Cashier")
+    ) {
       return next(new HttpError("Access Forbiden", 403));
     }
 
