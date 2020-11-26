@@ -37,7 +37,7 @@ const orderSchema = new mongoose.Schema(
     },
     days: {
       type: Number,
-      min: 0,
+      min: 1,
     },
     overDue: {
       type: Date,
@@ -45,6 +45,10 @@ const orderSchema = new mongoose.Schema(
     status: {
       type: String,
       default: "On Going",
+    },
+    cashier: {
+      type: String,
+      required: true,
     },
   },
   {
