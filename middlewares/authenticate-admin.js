@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
   }
 
   try {
-    const decodeToken = jwt.decode(token, process.env.JWT_KEY_ACCESS_ADMIN);
+    const decodeToken = jwt.verify(token, process.env.JWT_KEY_ACCESS_ADMIN);
 
     if (
       !decodeToken.role ||
