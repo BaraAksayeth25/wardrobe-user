@@ -1,2 +1,8 @@
 # node moules
 /node_modules
+
+# Images
+/uploads
+
+# env
+nodemon.json
