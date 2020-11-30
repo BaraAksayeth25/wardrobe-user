@@ -1,12 +1,13 @@
 {
   "env": {
     "NODE_SERVER": "DEVELOPMENT",
-    "DEFAULT_PROFILE_PICT": "image.jpg",
-    "DEFAULT_IMAGE_PRODUCT": "image.jpg",
+    "DEFAULT_PROFILE_PICT": "user.jpg",
+    "DEFAULT_IMAGE_PRODUCT": "product.png",
     "EMAIL_SENDER": "mbara4321@gmail.com",
     "PASSWORD_EMAIL": "passwordinhere",
-    "JWT_KEY_ACCESS": "NEED_NOT_TO_KNOW_ACCESS",
-    "JWT_KEY_REFRESH": "NEED_NOT_TO_KNOW_REFRESH",
-    "URL_EMAIL_VERIFICATION": "localhost:3000/activate"
+    "JWT_KEY_ACCESS": "vRrVuOihofXnsuwPYTf4v8IgI5FF6+rg34limS40OxQoztRm00FmFkzhSyID",
+    "JWT_KEY_ACCESS_ADMIN": "I3krdTJ3Q01o7yGdCnpKgxOMyV08YJPJvT3sBtsfCGRyQCOkXNoxut9x9N0t",
+    "JWT_KEY_REFRESH": "2Y9k4uUVEUWvSnkPpZX/TzyBh5krxp92fTfTgVTWWLsXZw7KkoFiqBWIJDe3",
+    "URL_EMAIL_VERIFICATION": "http://localhost:3000/activate"
   }
 }
