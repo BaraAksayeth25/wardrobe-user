@@ -1,14 +1,18 @@
 const randomString = require("crypto-random-string");
 const { validationResult } = require("express-validator");
-const addDays = require("../../helpers/date");
-
 const TransactionModel = require("../../models/transaction-model");
+const ProductModel = require("../../models/product-model");
 const HttpError = require("../../models/http-error");
+
+const { addDays } = require("../../helpers/date");
+const reduceSameStock = require("../../helpers/reduce-stock");
 
 const createTransaction = async (req, res, next) => {
   const bookingCode = randomString({ length: 16, type: "distinguishable" });
 
-  const { email, products, totalPrice, days } = req.body;
+  const { email, totalPrice, days } = req.body;
+  let products = req.body.products;
+  products = reduceSameStock(products);
 
   if (email !== req.userData.email) {
     return next(new HttpError("Access Forbidden", 403));
@@ -36,47 +40,61 @@ const createTransaction = async (req, res, next) => {
     return next(new HttpError(err.message));
   }
 
-  let stockExceed = false;
   if (!newTransaction) {
     return next(new HttpError("Product Not Found", 404));
   }
 
   const productTransaction = newTransaction.products;
 
-  productTransaction.forEach((productOfTransaction) => {
-    const stockOfProduct = productOfTransaction._id.stocks.filter(
+  let setStockProducts = [];
+  let priceProducts = 0;
+  for (const productOfTransaction of productTransaction) {
+    const stockOfProduct = productOfTransaction._id.stocks.find(
       (stock) => stock.size === productOfTransaction.size
     );
+    if (productOfTransaction.stock === 0) {
+      return next(new HttpError("Minimal stock is One", 400));
+    }
+
     // Cek jika stok yang dibeli melebihi stok yang tersedia
-    if (
-      stockOfProduct.length === 0 ||
-      productOfTransaction.stock >= stockOfProduct[0].stock
-    ) {
-      return (stockExceed = true);
+    if (!stockOfProduct || productOfTransaction.stock > stockOfProduct.stock) {
+      return next(new HttpError("Stock not avaliable", 400));
     }
-  });
-
-  let error;
-  const totalPriceProduct = productTransaction.reduce((accProd, curProd) => {
     try {
-      return (
-        days *
-        (accProd.stock * accProd._id.price + curProd.stock * curProd._id.price)
-      );
-    } catch (err) {
-      error = err;
-    }
-  });
+      // Mengambil total harga dari produk yang dipesan
+      priceProducts +=
+        productOfTransaction.stock * productOfTransaction._id.price;
 
-  //   Cek jika stok melebihi bata dan harga total tidak sama
-  if (error || stockExceed || totalPriceProduct !== totalPrice) {
-    return next(
-      new HttpError(
-        error ||
-          "Stock not available or Stock Exceeds Limit or unknown TotalPrice",
-        error ? 500 : 400
-      )
-    );
+      let productInTransaction = await ProductModel.findById(
+        productOfTransaction._id._id
+      );
+      // update stocks
+      productInTransaction.stocks = productInTransaction.stocks.map((stock) =>
+        stock.size === productOfTransaction.size
+          ? {
+              size: stock.size,
+              stock: stock.stock - productOfTransaction.stock,
+            }
+          : stock
+      );
+      setStockProducts.push(productInTransaction);
+    } catch (err) {
+      return next(new HttpError(err.message, 500));
+    }
+  }
+
+  try {
+    priceProducts *= days; // Mengalikan total harga dengan hari pemesanan
+    if (priceProducts !== totalPrice) {
+      return next(new HttpError("Price Not Same", 400));
+    }
+
+    // Update stock
+    for (const newStock of setStockProducts) {
+      await newStock.save();
+    }
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
   }
 
   try {
