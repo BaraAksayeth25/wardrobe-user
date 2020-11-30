@@ -50,6 +50,17 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    finishedAt: {
+      type: Date,
+    },
+    fine: {
+      type: Number,
+      min: 0,
+    },
+    late: {
+      type: Number,
+      min: 0,
+    },
   },
   {
     timestamps: true,
