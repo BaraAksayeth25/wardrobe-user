@@ -1,6 +1,8 @@
 const express = require("express");
 const { check } = require("express-validator");
-const Authentication = require("../middlewares/authenticate");
+const authenticate = require("../middlewares/authenticate");
+const adminAuthenticate = require("../middlewares/authenticate-admin");
+
 const route = express.Router();
 
 const {
@@ -8,17 +10,33 @@ const {
   getTransactionByBookingCode,
   getTransactionByUser,
 } = require("../controllers/user/transaction-controller");
+const {
+  getTransactionAdmin,
+  verifyTransaction,
+} = require("../controllers/admin/transaction-controller");
 
-route.use(Authentication);
-
-route.get("/user", getTransactionByUser);
+route.get("/user", authenticate, getTransactionByUser);
 
 route.get(
   "/code/:bookingCode",
-  [check("bookingCode").isString().isLength({ min: 16, max: 16 })],
+  authenticate,
+  check("bookingCode").isString().isLength({ min: 16, max: 16 }),
   getTransactionByBookingCode
 );
 
-route.post("/create", createTransaction);
+route.post("/create", authenticate, createTransaction);
+
+route.get("/");
+
+// Admin route
+route.use(adminAuthenticate);
+
+route.get(
+  "/admin/code/:code",
+  check("code").isString().isLength({ min: 16, max: 16 }),
+  getTransactionAdmin
+);
+
+route.patch("/admin/verify/:id", check("id").isMongoId(), verifyTransaction);
 
 module.exports = route;
