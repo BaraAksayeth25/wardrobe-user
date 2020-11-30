@@ -5,6 +5,8 @@ const helmet = require("helmet");
 const fs = require("fs");
 const path = require("path");
 const HttpError = require("./models/http-error");
+const CronJob = require("cron").CronJob;
+const main = require("./helpers/delete-transaction");
 
 // DB Connection
 const { db_url, options } = require("./config/db");
@@ -47,6 +49,8 @@ app.use((req, res, next) => {
   const error = new HttpError("Could not find this route", 404);
   throw error;
 });
+
+const jobs = new CronJob("12 * * * * *", main, null, true);
 
 // Error Handler
 app.use((err, req, res, next) => {
