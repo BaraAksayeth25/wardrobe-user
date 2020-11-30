@@ -51,9 +51,9 @@ const transactionSchema = new mongoose.Schema({
     type: String,
     default: "Waiting For Payment",
   },
-  createdAt: {
+  expires: {
     type: Date,
-    default: () => +new Date(),
+    default: () => +new Date() + 1000 * 60 * 60 * 24,
     index: {
       expires: "2d",
     },
