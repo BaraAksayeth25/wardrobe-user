@@ -5,6 +5,8 @@ const adminAuthenticate = require("../middlewares/authenticate-admin");
 
 const route = express.Router();
 
+const { roleCashier } = require("../middlewares/role-check");
+
 const {
   createTransaction,
   getTransactionByBookingCode,
@@ -29,7 +31,7 @@ route.post("/create", authenticate, createTransaction);
 route.get("/");
 
 // Admin route
-route.use(adminAuthenticate);
+route.use(adminAuthenticate, roleCashier);
 
 route.get(
   "/admin/code/:code",

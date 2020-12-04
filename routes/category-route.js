@@ -3,6 +3,7 @@ const { check } = require("express-validator");
 const route = express.Router();
 
 const { getAllCategory } = require("../controllers/user/category-controller");
+const { roleAdmin, roleCashier } = require("../middlewares/role-check");
 
 const {
   createCategory,
@@ -14,7 +15,7 @@ const adminAuthenticate = require("../middlewares/authenticate-admin");
 
 route.get("/", getAllCategory);
 
-route.use(adminAuthenticate);
+route.use(adminAuthenticate, roleAdmin);
 
 route.get("/:id", check("id").isMongoId(), getCategoryById);
 

@@ -4,6 +4,8 @@ const adminAuthenticate = require("../middlewares/authenticate-admin");
 
 const route = express.Router();
 
+const { roleCashier, roleAdmin } = require("../middlewares/role-check");
+
 const {
   getOrderFinished,
   getOrderOnGoing,
@@ -22,12 +24,12 @@ route.get("/user/finished", authentication, getOrderFinished);
 
 route.use(adminAuthenticate);
 
-route.get("/admin/finished/pages/:pages", getOrderFinishedAdmin);
+route.get("/admin/finished/pages/:pages", roleAdmin, getOrderFinishedAdmin);
 
-route.get("/admin/ongoing/pages/:pages", getOrderOnGoingAdmin);
+route.get("/admin/ongoing/pages/:pages", roleAdmin, getOrderOnGoingAdmin);
 
-route.get("/admin/code/:code", getOrderByBookingCodeAdmin);
+route.get("/admin/code/:code", roleCashier, getOrderByBookingCodeAdmin);
 
-route.patch("/admin/code/:code", finishingOrderAdmin);
+route.patch("/admin/code/:code", roleCashier, finishingOrderAdmin);
 
 module.exports = route;

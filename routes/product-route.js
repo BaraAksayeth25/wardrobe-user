@@ -4,6 +4,8 @@ const { check } = require("express-validator");
 const adminAuthenticate = require("../middlewares/authenticate-admin");
 const imageUpload = require("../middlewares/image-upload");
 
+const { roleAdmin } = require("../middlewares/role-check");
+
 const route = express.Router();
 
 const {
@@ -28,7 +30,7 @@ route.get("/name/:name/pages/:pages", getProductByName);
 route.get("/latest", getLatestProduct);
 route.get("/top", getTopProduct);
 
-route.use(adminAuthenticate);
+route.use(adminAuthenticate, roleAdmin);
 
 route.post(
   "/add",
