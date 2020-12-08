@@ -169,7 +169,8 @@ const updateProfilePict = async (req, res, next) => {
         },
       }
     );
-    fs.unlinkSync(path.resolve("uploads", "images", `${user.profilePict}`));
+    user.profilePict !== process.env.DEFAULT_PROFILE_PICT &&
+      fs.unlinkSync(path.resolve("uploads", "images", `${user.profilePict}`));
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
