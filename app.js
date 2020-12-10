@@ -45,7 +45,7 @@ app.use("/api/users", userRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/transactions", transactionRoute);
 app.use("/api/admins", adminRoute);
-app.use("/api/report", reportRoute);
+app.use("/api/reports", reportRoute);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route", 404);
