@@ -59,8 +59,66 @@ const getMonthsInYear = async (req, res, next) => {
   }
 
   const finishReport = convertReport(report, "month", 12, 1);
-
-  res.json({ message: "OK", data: finishReport });
+  const result = { year: year, report: finishReport };
+  res.json({ message: "OK", data: result });
 };
 
-module.exports = { getFiveYearsLatest, getMonthsInYear };
+const getWeeksOfMonth = async (req, res, next) => {
+  const { year, month } = req.params;
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  let report;
+  try {
+    report = await OrderModel.aggregate([
+      {
+        $project: {
+          date: 1,
+          year: { $year: "$date" },
+          month: { $month: "$date" },
+          weekOfMonth: {
+            $ceil: {
+              $divide: [{ $dayOfMonth: "$date" }, 7],
+            },
+          },
+        },
+      },
+      {
+        $match: {
+          month: +month,
+          year: +year,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $cond: [{ $gte: ["$weekOfMonth", 5] }, 4, "$weekOfMonth"],
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  const finishReport = convertReport(report, "week", 4, 1);
+  const result = {
+    year: +year,
+    month: months[month - 1],
+    report: finishReport,
+  };
+  res.json({ message: "OK", data: result });
+};
+
+module.exports = { getFiveYearsLatest, getMonthsInYear, getWeeksOfMonth };
