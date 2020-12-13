@@ -79,6 +79,7 @@ const verifyTransaction = async (req, res, next) => {
       }),
       TransactionModel.findByIdAndDelete(id),
     ]);
+    order = await order.populate("products._id").execPopulate();
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }

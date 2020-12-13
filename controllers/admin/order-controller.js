@@ -11,6 +11,7 @@ const getOrderOnGoingAdmin = async (req, res, next) => {
   let order;
   try {
     order = await OrderModel.find({ status: "On Going" })
+      .populate("products._id")
       .limit(limitDocument)
       .skip(skipDocument);
   } catch (err) {
@@ -27,6 +28,7 @@ const getOrderFinishedAdmin = async (req, res, next) => {
   let order;
   try {
     order = await OrderModel.find({ status: "Finished" })
+      .populate("products._id")
       .limit(limitDocument)
       .skip(skipDocument);
   } catch (err) {
