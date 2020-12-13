@@ -17,6 +17,9 @@ const getCategoryById = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
+  if (!category) {
+    return next(new HttpError("Category not found", 404));
+  }
   res.json({ message: "OK", data: category });
 };
 
