@@ -1,7 +1,7 @@
 const express = require("express");
 const route = express.Router();
 
-const authenticate = require("../middlewares/authenticate");
+const authenticateAdmin = require("../middlewares/authenticate-admin");
 const { roleAdmin } = require("../middlewares/role-check");
 const {
   getFiveYearsLatest,
@@ -9,7 +9,7 @@ const {
   getWeeksOfMonth,
 } = require("../controllers/admin/report-controller");
 
-route.use(authenticate, roleAdmin);
+route.use(authenticateAdmin, roleAdmin);
 route.get("/year", getFiveYearsLatest);
 route.get("/year/:year", getMonthsInYear);
 route.get("/year/:year/month/:month", getWeeksOfMonth);
