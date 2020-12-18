@@ -106,8 +106,23 @@ const deleteProduct = async (req, res, next) => {
   res.json({ message: "OK" });
 };
 
+const getAllProducts = async (req, res, next) => {
+  let products;
+  try {
+    products = await ProductModel.find(
+      {},
+      { __v: 0 },
+      { sort: { createdAt: -1 } }
+    ).populate("category");
+  } catch (err) {
+    return next(new HttpError(err.message, 500));
+  }
+  res.json({ message: "OK", data: products });
+};
+
 module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  getAllProducts,
 };

@@ -21,6 +21,7 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  getAllProducts,
 } = require("../controllers/admin/product-controller");
 
 route.get("/id/:id", getProductById);
@@ -31,6 +32,8 @@ route.get("/latest", getLatestProduct);
 route.get("/top", getTopProduct);
 
 route.use(adminAuthenticate, roleAdmin);
+
+route.get("/all", getAllProducts);
 
 route.post(
   "/add",
