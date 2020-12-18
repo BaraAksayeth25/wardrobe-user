@@ -4,16 +4,11 @@ const OrderModel = require("../../models/order-model");
 const ProductModel = require("../../models/product-model");
 
 const getOrderOnGoingAdmin = async (req, res, next) => {
-  const pages = parseInt(req.params.pages) || 1;
-  const skipDocument = pages <= 1 ? 0 : pages * 10 - 10;
-  const limitDocument = 10;
-
   let order;
   try {
-    order = await OrderModel.find({ status: "On Going" })
-      .populate("products._id")
-      .limit(limitDocument)
-      .skip(skipDocument);
+    order = await OrderModel.find({ status: "On Going" }).populate(
+      "products._id"
+    );
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }
@@ -21,16 +16,11 @@ const getOrderOnGoingAdmin = async (req, res, next) => {
 };
 
 const getOrderFinishedAdmin = async (req, res, next) => {
-  const pages = parseInt(req.params.pages) || 1;
-  const skipDocument = pages <= 1 ? 0 : pages * 10 - 10;
-  const limitDocument = 10;
-
   let order;
   try {
-    order = await OrderModel.find({ status: "Finished" })
-      .populate("products._id")
-      .limit(limitDocument)
-      .skip(skipDocument);
+    order = await OrderModel.find({ status: "Finished" }).populate(
+      "products._id"
+    );
   } catch (err) {
     return next(new HttpError(err.message, 500));
   }

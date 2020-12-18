@@ -24,9 +24,9 @@ route.get("/user/finished", authentication, getOrderFinished);
 
 route.use(adminAuthenticate);
 
-route.get("/admin/finished/pages/:pages", roleAdmin, getOrderFinishedAdmin);
+route.get("/admin/finished", roleAdmin, getOrderFinishedAdmin);
 
-route.get("/admin/ongoing/pages/:pages", roleAdmin, getOrderOnGoingAdmin);
+route.get("/admin/ongoing", roleAdmin, getOrderOnGoingAdmin);
 
 route.get("/admin/code/:code", roleCashier, getOrderByBookingCodeAdmin);
 
