@@ -39,7 +39,9 @@ const updateProduct = async (req, res, next) => {
   }
 
   const id = req.params.id;
-  const { name, description, category, price, stocks } = req.body;
+  const { name, description, category, price } = req.body;
+  let stocks = req.body.stocks;
+  stocks = JSON.parse(stocks)
 
   let product;
   try {
