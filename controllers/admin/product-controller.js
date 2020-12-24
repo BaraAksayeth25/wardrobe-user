@@ -13,8 +13,10 @@ const createProduct = async (req, res, next) => {
     );
   }
 
-  const { name, description, category, price, stocks } = req.body;
-  console.log(stocks);
+  const { name, description, category, price } = req.body;
+  let stocks = req.body.stocks;
+  stocks = JSON.parse(stocks);
+  
   try {
     await ProductModel.create({
       name,
