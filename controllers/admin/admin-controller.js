@@ -98,7 +98,7 @@ const login = async (req, res, next) => {
     return next(new HttpError(err, 500));
   }
 
-  res.json({ message: "OK", token });
+  res.json({ message: "OK", token, role: admin.role });
 };
 
 const getAdmin = async (req, res, next) => {
