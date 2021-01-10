@@ -8,6 +8,8 @@ const path = require("path");
 const HttpError = require("./models/http-error");
 const CronJob = require("cron").CronJob;
 const main = require("./helpers/delete-transaction");
+const LoggerService = require("./helpers/logger");
+const logger = new LoggerService("app");
 
 // DB Connection
 const { db_url, options } = require("./config/db");
@@ -20,6 +22,7 @@ const orderRoute = require("./routes/order-route");
 const transactionRoute = require("./routes/transaction-route");
 const adminRoute = require("./routes/admin-route");
 const reportRoute = require("./routes/report-route");
+const { isNullOrUndefined } = require("util");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -58,7 +61,9 @@ app.use((err, req, res, next) => {
   if (res.headerSent) {
     return next(error);
   }
-
+  logger.setLogData(req.body);
+  logger.error(err.message);
+  logger.error("Return success response", { success: false });
   res.status(err.code || 500);
   res.json({ message: err.message || "An Unknown Error!" });
 });
@@ -66,5 +71,10 @@ app.use((err, req, res, next) => {
 // Run Database and server
 mongoose
   .connect(db_url, options)
-  .then(() => app.listen(PORT, () => console.log(`Server Running in ${PORT}`)))
+  .then(() =>
+    app.listen(PORT, () => {
+      console.log(`Server Running in ${PORT}`);
+      logger.info(`Server Running in ${PORT}`);
+    })
+  )
   .catch((err) => console.log(err));
