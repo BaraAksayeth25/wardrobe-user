@@ -68,16 +68,39 @@ const createTransaction = async (req, res, next) => {
       let productInTransaction = await ProductModel.findById(
         productOfTransaction._id._id
       );
-      // update stocks
-      productInTransaction.stocks = productInTransaction.stocks.map((stock) =>
-        stock.size === productOfTransaction.size
-          ? {
-              size: stock.size,
-              stock: stock.stock - productOfTransaction.stock,
-            }
-          : stock
+      
+      // Mencari stock yang sudah di kurang
+      const existStock = setStockProducts.findIndex(
+        (product) =>
+          product._id.toString() == productInTransaction._id.toString()
       );
-      setStockProducts.push(productInTransaction);
+
+      // Jika product tidak terdaftar di existStock
+      if (existStock < 0) {
+        // Update stock dari findById products
+        productInTransaction.stocks = productInTransaction.stocks.map((stock) =>
+          stock.size === productOfTransaction.size
+            ? {
+                size: stock.size,
+                stock: stock.stock - productOfTransaction.stock,
+              }
+            : stock
+        );
+        // Masukkan ke existStocks
+        setStockProducts.push(productInTransaction);
+      } else {
+        // Update stocks dari existStock
+        setStockProducts[existStock].stocks = setStockProducts[
+          existStock
+        ].stocks.map((stock) =>
+          stock.size === productOfTransaction.size
+            ? {
+                size: stock.size,
+                stock: stock.stock - productOfTransaction.stock,
+              }
+            : stock
+        );
+      }
     } catch (err) {
       return next(new HttpError(err.message, 500));
     }
