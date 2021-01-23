@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const escapeStringRegexp = require("escape-string-regexp");
 const ProductModel = require("../../models/product-model");
 const HttpError = require("../../models/http-error");
+const reduceSameSize = require("../../helpers/reduce-stock");
 
 const getAllProduct = async (req, res, next) => {
   const pages = parseInt(req.params.pages) || 1;
@@ -104,6 +105,29 @@ const getProductByName = async (req, res, next) => {
   res.json({ message: "OK", data: product, name });
 };
 
+const checkAvailableStock = async (req, res, next) => {
+  const products = reduceSameSize(req.body.products);
+
+  for (let i = 0; i < products.length; i++) {
+    let product;
+    try {
+      product = await ProductModel.findById(products[i]._id);
+    } catch (err) {
+      return next(new HttpError(err.message, 500));
+    }
+    const indexOfStock = product.stocks.findIndex(
+      (stock) => stock.size === products[i].size
+    );
+    products[i].maxStock = product.stocks[indexOfStock]?.stock || 0;
+    products[i].available =
+      product.stocks[indexOfStock]?.stock >= products[i].stock &&
+      product.stocks[indexOfStock]?.stock !== 0
+        ? true
+        : false;
+  }
+  res.json({ message: "OK", data: products });
+};
+
 module.exports = {
   getAllProduct,
   getProductById,
@@ -111,4 +135,5 @@ module.exports = {
   getLatestProduct,
   getTopProduct,
   getProductByName,
+  checkAvailableStock,
 };

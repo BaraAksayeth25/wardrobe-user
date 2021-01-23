@@ -15,6 +15,7 @@ const {
   getProductByCategory,
   getTopProduct,
   getProductByName,
+  checkAvailableStock,
 } = require("../controllers/user/product-controller");
 
 const {
@@ -30,6 +31,7 @@ route.get("/ct/:ct/pages/:pages", getProductByCategory);
 route.get("/name/:name/pages/:pages", getProductByName);
 route.get("/latest", getLatestProduct);
 route.get("/top", getTopProduct);
+route.post("/check", checkAvailableStock);
 
 route.use(adminAuthenticate, roleAdmin);
 
